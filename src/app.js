@@ -1,46 +1,46 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
 const connectDB = require('./config/database');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const http = require('http'); //<<
-
+const http = require('http');
 require('dotenv').config();
 
+// CORS FIX FOR RENDER + LOCAL
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [ "http://localhost:5173", process.env.FRONTEND_URL ],
   credentials: true,
 }));
 
-app.use(express.json()); //This line is used in Express.js to allow your server to parse incoming JSON data in the body of HTTP requests.
-app.use(cookieParser());  //You cannot access cookies via req.cookies, because by default, Express doesn't know how to parse them.that'why we use app.use(cookieParser());
+app.use(express.json());
+app.use(cookieParser());
 
 const authRouter = require('./routes/auth');
 const profileRouter = require('./routes/profile');
 const requestRouter = require('./routes/request');
 const userRouter = require('./routes/user');
-const chatRouter = require('./routes/chat'); //<<
-const intializeSocket = require('./utils/socket');  //<<
+const chatRouter = require('./routes/chat');
+const initializeSocket = require('./utils/socket');
 
-app.use("/",authRouter);
-app.use("/",profileRouter);
-app.use("/",requestRouter);
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
 app.use("/", userRouter);
-app.use("/", chatRouter); //<<
+app.use("/", chatRouter);
 
-const server = http.createServer(app); //<<
-intializeSocket(server);  //<<
+const server = http.createServer(app);
+initializeSocket(server);
 
-//Connecting database with server
+const PORT = process.env.PORT || 5000;
+
+// CONNECT DATABASE AND START SERVER
 connectDB()
   .then(() => {
-    console.log("Database connected succesfully");
-    server.listen(process.env.PORT, () => {
-      console.log("Server is running on port 5000")
+    console.log("Database connected successfully");
+    server.listen(PORT, () => {
+      console.log("Server running on port:", PORT);
     });
   })
   .catch((err) => {
-    console.log("Database connection failed", err)
+    console.log("Database connection failed", err);
   });
-
-
