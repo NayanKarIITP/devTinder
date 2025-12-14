@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
                 return validator.isStrongPassword(value, {
                     minLength: 6,
                     minLowercase: 1,
-                    minUppercase: 0,
+                    minUppercase: 1,
                     minNumbers: 1,
                     minSymbols: 0
                 });

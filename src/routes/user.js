@@ -5,7 +5,7 @@ const { userAuth } = require('../middlewares/auth');
 const ConnectionRequest = require('../models/connectionRequest');
 const User = require('../models/user');
 
-const USER_SAFE_DATA = ["firstName", "lastName", "age", "gender", "photoURL", "skills", "about"];
+const USER_SAFE_DATA = ["_id","firstName", "lastName", "age", "gender", "photoURL", "skills", "about"];
 
 userRouter.get("/user/requests/recieved", userAuth, async (req, res) => { //mane jara friend request pathiyehe tader data
     try {
