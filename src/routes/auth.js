@@ -1,5 +1,5 @@
 const express = require('express');
-const authRouter =  express.Router();
+const authRouter = express.Router();
 
 const { validateSignUpData } = require("../utils/validation");
 var bcrypt = require('bcrypt');
@@ -11,7 +11,7 @@ authRouter.post('/sign', async (req, res) => {
     validateSignUpData(req);
 
     //Encrypt the password
-    const {firstName,lastName,emailId,password,gender,age,about,skills,photoURL} = req.body;
+    const { firstName, lastName, emailId, password, gender, age, about, skills, photoURL } = req.body;
 
     const passwordHash = await bcrypt.hash(password, 10);
     console.log(passwordHash);
@@ -29,13 +29,21 @@ authRouter.post('/sign', async (req, res) => {
     });
 
     const savedUser = await userData.save();
-    const token = await savedUser.getJWT(); 
+    const token = await savedUser.getJWT();
 
-    res.cookie("token", token, { 
-      expires: new Date(Date.now() + 120 * 3600000) 
+    // res.cookie("token", token, { 
+    //   expires: new Date(Date.now() + 120 * 3600000) 
+    // });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,        // REQUIRED for Vercel + Render
+      sameSite: "none",    // REQUIRED for cross-domain
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.json({message:'User added successfully',data:savedUser});
+
+    res.json({ message: 'User added successfully', data: savedUser });
 
   } catch (error) {
     console.error("Error creating user:", error);
@@ -75,10 +83,10 @@ authRouter.post("/login", async (req, res) => {
 
 
 authRouter.post("/logout", async (req, res) => {
-  res.cookie("token", null, {   
-        expires: new Date(Date.now())
-      });
-    res.send("Log out successfully");
+  res.cookie("token", null, {
+    expires: new Date(Date.now())
+  });
+  res.send("Log out successfully");
 })
 
 
