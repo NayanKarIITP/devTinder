@@ -48,6 +48,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://techtribe-delta.vercel.app",
 ];
+app.set("trust proxy", 1); 
 
 app.use(
   cors({
