@@ -53,39 +53,44 @@ authRouter.post('/sign', async (req, res) => {
 
 
 authRouter.post("/login", async (req, res) => {
-
   try {
     const { emailId, password } = req.body;
 
-    const user = await User.findOne({ emailId: emailId });
+    const user = await User.findOne({ emailId });
     if (!user) {
       throw new Error("Invalid data");
     }
-    const isPasswordValid = await user.validatePassword(password); // See models/user.js
 
-    if (isPasswordValid) {
-      //Create a JWT token
-      const token = await user.getJWT(); // See models/user.js
+    const isPasswordValid = await user.validatePassword(password);
 
-      //Add  the token to cookie and send the response back to the user
-      res.cookie("token", token, {   //{httpOnly:true} ->it will work for http only not for https or others
-        expires: new Date(Date.now() + 120 * 3600000) //the cookies will expires in 8 hrs
-      });
-
-      res.send(user);
-    } else {
-      throw new Error("Invalid Credentials")
+    if (!isPasswordValid) {
+      throw new Error("Invalid Credentials");
     }
+
+    const token = await user.getJWT();
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.send(user);
   } catch (error) {
     res.status(401).send("ERROR: " + error.message);
   }
 });
 
 
+
 authRouter.post("/logout", async (req, res) => {
-  res.cookie("token", null, {
-    expires: new Date(Date.now())
-  });
+  res.cookie("token", "", {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  expires: new Date(0),
+});
   res.send("Log out successfully");
 })
 

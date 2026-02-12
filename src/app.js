@@ -44,10 +44,13 @@ const cors = require('cors');
 const initializeSocket = require('./utils/socket'); // ⚠️ ADD THIS
 require('dotenv').config();
 
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://techtribe-delta.vercel.app",
 ];
+app.set("trust proxy", 1); 
+
 app.set("trust proxy", 1); 
 
 app.use(
