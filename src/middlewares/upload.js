@@ -16,7 +16,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'techtribe_profiles', // Creates a clean folder in your Cloudinary dashboard
+    folder: 'techtribe_profiles', 
     allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
     transformation: [{ width: 500, height: 500, crop: 'fill' }] // Auto-crops to a perfect square
   }

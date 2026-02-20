@@ -1,42 +1,3 @@
-// const validator = require("validator");
-
-// const validateSignUpData = (req) => {
-//     const { firstName, lastName, emailId, password } = req.body;
-
-//     if (!firstName || !lastName) {
-//         throw new Error("Name is not found")
-//     }
-//     else if (!validator.isEmail(emailId)) {
-//         throw new Error("Email is not valid");
-//     }
-//     else if (!validator.isStrongPassword(password)) {
-//         throw new Error("Give Strong password");
-//     }
-// };
-
-// const validateEditProfileData=(req)=>{
-//     const allowedEditFields=[
-//         "firstName",
-//         "lastName",
-//         "photoURL",
-//         "gender",
-//         "age",
-//         "about",
-//         "skills"
-//     ];
-
-//     const isEditAllowed = Object.keys(req.body).every((field)=> allowedEditFields.includes(field));
-
-//     return isEditAllowed; 
-// }
-// module.exports={
-//     validateSignUpData,
-//     validateEditProfileData
-// }
-
-
-
-
 
 const validator = require("validator");
 
@@ -73,8 +34,6 @@ const validateEditProfileData = (req) => {
     }
 
     // 2. FormData Sanitization: Handle empty string conversions
-    // If age is sent as an empty string, delete it from req.body so Mongoose 
-    // doesn't throw a CastError when trying to save it as a Number.
     if (req.body.age === "") {
         delete req.body.age;
     }

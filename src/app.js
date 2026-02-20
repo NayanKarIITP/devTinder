@@ -1,37 +1,3 @@
-// const express = require('express');
-// const serverless = require("serverless-http");
-// const app = express();
-// const connectDB = require('./config/database');
-// const cookieParser = require('cookie-parser');
-// const cors = require('cors');
-// require('dotenv').config();
-
-// app.use(cors({
-//   origin: ["http://localhost:5173","https://techtribe-delta.vercel.app"],
-//   credentials: true,
-// }));
-
-// app.use(express.json());
-// app.use(cookieParser());
-
-// app.use("/", require('./routes/auth'));
-// app.use("/", require('./routes/profile'));
-// app.use("/", require('./routes/request'));
-// app.use("/", require('./routes/user'));
-// app.use("/", require('./routes/chat'));
-
-// connectDB();
-
-// // IMPORTANT!
-// if (process.env.NETLIFY) {
-//   module.exports.handler = serverless(app);
-// } else {
-//   const PORT = process.env.PORT || 5000;
-//   app.listen(PORT, () => console.log("Server running:", PORT));
-// }
-
-
-
 
 const express = require("express");
 const http = require("http");
@@ -47,13 +13,13 @@ const app = express();
 //  TRUST PROXY (IMPORTANT for secure cookies on Render)
 app.set("trust proxy", 1);
 
-// 🔹 ALLOWED ORIGINS
+// ALLOWED ORIGINS
 const allowedOrigins = [
   "http://localhost:5173",
   "https://techtribe-delta.vercel.app",
 ];
 
-// 🔹 CORS CONFIGURATION
+// CORS CONFIGURATION
 app.use(
   cors({
     origin: allowedOrigins,
@@ -62,21 +28,21 @@ app.use(
   })
 );
 
-// 🔹 MIDDLEWARES
+// MIDDLEWARES
 app.use(express.json());
 app.use(cookieParser());
 
-// 🔹 ROUTES
+// ROUTES
 app.use("/", require("./routes/auth"));
 app.use("/", require("./routes/profile"));
 app.use("/", require("./routes/request"));
 app.use("/", require("./routes/user"));
 app.use("/", require("./routes/chat"));
 
-// 🔹 CONNECT DATABASE
+// CONNECT DATABASE
 connectDB();
 
-// 🔹 SERVER CONFIGURATION
+// SERVER CONFIGURATION
 if (process.env.NETLIFY) {
   // For serverless deployment (if ever needed)
   module.exports.handler = serverless(app);
@@ -85,7 +51,7 @@ if (process.env.NETLIFY) {
 
   const server = http.createServer(app);
 
-  // 🔹 Initialize Socket.io
+  // Initialize Socket.io
   initializeSocket(server);
 
   server.listen(PORT, () => {
