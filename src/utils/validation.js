@@ -1,21 +1,61 @@
+// const validator = require("validator");
+
+// const validateSignUpData = (req) => {
+//     const { firstName, lastName, emailId, password } = req.body;
+
+//     if (!firstName || !lastName) {
+//         throw new Error("Name is not found")
+//     }
+//     else if (!validator.isEmail(emailId)) {
+//         throw new Error("Email is not valid");
+//     }
+//     else if (!validator.isStrongPassword(password)) {
+//         throw new Error("Give Strong password");
+//     }
+// };
+
+// const validateEditProfileData=(req)=>{
+//     const allowedEditFields=[
+//         "firstName",
+//         "lastName",
+//         "photoURL",
+//         "gender",
+//         "age",
+//         "about",
+//         "skills"
+//     ];
+
+//     const isEditAllowed = Object.keys(req.body).every((field)=> allowedEditFields.includes(field));
+
+//     return isEditAllowed; 
+// }
+// module.exports={
+//     validateSignUpData,
+//     validateEditProfileData
+// }
+
+
+
+
+
 const validator = require("validator");
 
 const validateSignUpData = (req) => {
     const { firstName, lastName, emailId, password } = req.body;
 
     if (!firstName || !lastName) {
-        throw new Error("Name is not found")
+        throw new Error("Name is required");
     }
     else if (!validator.isEmail(emailId)) {
         throw new Error("Email is not valid");
     }
     else if (!validator.isStrongPassword(password)) {
-        throw new Error("Give Strong password");
+        throw new Error("Please enter a stronger password");
     }
 };
 
-const validateEditProfileData=(req)=>{
-    const allowedEditFields=[
+const validateEditProfileData = (req) => {
+    const allowedEditFields = [
         "firstName",
         "lastName",
         "photoURL",
@@ -25,11 +65,32 @@ const validateEditProfileData=(req)=>{
         "skills"
     ];
 
-    const isEditAllowed = Object.keys(req.body).every((field)=> allowedEditFields.includes(field));
+    // 1. Check if the user is trying to inject fields that aren't allowed
+    const isEditAllowed = Object.keys(req.body).every((field) => allowedEditFields.includes(field));
 
-    return isEditAllowed; 
+    if (!isEditAllowed) {
+        return false;
+    }
+
+    // 2. FormData Sanitization: Handle empty string conversions
+    // If age is sent as an empty string, delete it from req.body so Mongoose 
+    // doesn't throw a CastError when trying to save it as a Number.
+    if (req.body.age === "") {
+        delete req.body.age;
+    }
+
+    // 3. Extra Security: Prevent crazy long strings that could bloat your DB
+    if (req.body.firstName && req.body.firstName.length > 50) {
+        throw new Error("First name is too long");
+    }
+    if (req.body.about && req.body.about.length > 500) {
+        throw new Error("About section cannot exceed 500 characters");
+    }
+
+    return true; 
 }
-module.exports={
+
+module.exports = {
     validateSignUpData,
     validateEditProfileData
-}
+};

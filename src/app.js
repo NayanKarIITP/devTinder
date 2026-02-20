@@ -44,7 +44,7 @@ require("dotenv").config();
 
 const app = express();
 
-// 🔹 TRUST PROXY (IMPORTANT for secure cookies on Render)
+//  TRUST PROXY (IMPORTANT for secure cookies on Render)
 app.set("trust proxy", 1);
 
 // 🔹 ALLOWED ORIGINS
